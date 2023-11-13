@@ -40,4 +40,106 @@ Pedro Augusto Camargo (A102504) \\ \vspace{3mm}
 
 \tableofcontents
 \pagebreak
+
+\section{Analise da fragmentação de pacotes IP}
+Foi capturado o tráfego gerado pelo comando: ping -s 6328 marco.uminho.pt
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/ping.png}
+    \caption{\label{fig:ping}Ping}
+\end{figure}
+
+\subsection*{a. Localize a primeira mensagem ICMP.}
+\subsubsection*{i) Porque é que houve necessidade
+de fragmentar o pacote inicial?}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/fragment.png}
+    \caption{\label{fig:fragment}Fragment}
+\end{figure}
+
+A necessidade surge de o facto de o tamanho do pacote ser superior ao MTU da rede, ou seja, não cabe num único pacote. O MTU da rede é de 1500 bytes, e o tamanho do pacote é de 6328 bytes, logo é necessário fragmentar o pacote.
+
+\subsubsection*{ii) Em que equipamento da rede ocorreu
+essa fragmentação?}
+
+A fragmentacao ocorreu no computador que enviou o pacote. 
+
+\subsection*{b. Imprima o primeiro fragmento do datagrama IP.}
+\subsubsection*{i) Que informação no
+cabeçalho indica que o datagrama foi fragmentado?}
+
+A opcao MF, que indica que o pacote foi fragmentado, pode ser observada no wireshark, dentro do campo Flags, no cabeçalho IP.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/mf.png}
+    \caption{\label{fig:more_fragments}More Fragments}
+\end{figure}
+
+\subsubsection*{ii) Que informação
+no cabeçalho IP indica que se trata do primeiro fragmento?}
+
+O campo Fragment Offset indica que se trata do primeiro fragmento, uma vez que o seu valor é 0.
+
+\subsubsection*{iii) Qual é o tamanho deste fragmento?}
+
+O tamanho do fragmento é de 1500 bytes, tal como indica o campo Total Length.
+
+\subsection*{c. Imprima o segundo fragmento do datagrama IP original. Que informação
+do cabeçalho IP indica que não se trata do primeiro fragmento? Há mais
+fragmentos? O que nos permite afirmar isso?}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/mf_offset.png}
+    \caption{\label{fig:more_fragments_offset}More Fragments Com Offset}
+\end{figure}
+
+O campo Fragment Offset indica que não se trata do primeiro fragmento, uma vez que o seu valor é 1480. O campo MF indica que há mais fragmentos, uma vez que o seu valor é 1.
+Logo basta que: Fragment Offset != 0 $\wedge$ MF == 1 para sabermos que não se trata do primeiro fragmento.
+
+\subsection*{d. Indique os campos que mudam no cabeçalho IP entre os diferentes
+fragmentos, e explique a forma como essa informação permite
+reconstruir o datagrama original.}
+
+Os campos que mudam sao:
+\begin{itemize}
+    \item Flag More Fragments (MF)
+    \item Fragment Offset
+    \item Total Length
+\end{itemize}
+Os campos que permitem reconstruir o datagrama original, sao o Fragment Offset, e a flag MF, pois estes permitem saber a ordem exata dos fragmentos, de forma a reconstruir tal e qual como antes de ser fragmentado.
+
+\subsection*{e. Como se deteta o último fragmento correspondente ao datagrama
+original? Estabeleça um filtro no Wireshark que permita listar o último
+fragmento do primeiro datagrama IP segmentado.}
+
+ip.flags.mf == 0
+
+\subsection*{f. Identifique o equipamento onde o datagrama IP original é reconstruído a
+partir dos fragmentos. A reconstrução poderia ter ocorrido noutro
+equipamento diferente do identificado? Porquê?}
+
+O equipamento onde o datagrama IP original é reconstruído é o servidor de IP: 193.136.9.240, ou seja, o servidor de marco.uminho.pt. A reconstrução poderia ter ocorrido noutro equipamento desde que a MTU fosse superior a MTU da ligacao anterior, ou seja maior que 1500 bytes, e que o equipamento tivesse a capacidade de reconstruir o datagrama original.
+
+\subsection*{g. Por que razão apenas o primeiro fragmento de cada pacote é identificado
+como sendo um pacote ICMP?}
+
+Apenas o primeiro fragmento de cada pacote é identificado como sendo um pacote ICMP, pois o conceito de ICMP tem por base os cabecalhos IP, e o conceito de fragmentacao de datagramas IP e relativo ao cabecalho IP.
+
+\subsection*{h. Determine o valor máximo de SIZE sem que ocorra
+fragmentação do pacote? Justifique o valor obtido, relacionando-o com o
+MTU (Maximum Transmission Unit) da rede.}
+
+Apos observar o output do comando ping no linux:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/ping_cmd.png}
+    \caption{\label{fig:ping_cmd}Comando Ping no Linux}
+\end{figure}
+Reparei que houve um acrescimo de 28 bytes na informacao enviada, para acomodar todos os cabecalhos essenciais na trasnmissao do pacote.
+Logo o valor maximo de SIZE sem que ocorra fragmentacao do pacote e de 1472 bytes, pois 1472 + 28 = 1500 bytes, que e o MTU da rede.
+
 \end{document}
