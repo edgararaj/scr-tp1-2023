@@ -42,7 +42,10 @@ Pedro Augusto Camargo (A102504) \\ \vspace{3mm}
 \pagebreak
 
 \section{Parte 1}
-\subsection{Analise da fragmentação de pacotes IP}
+\begin{description}
+    \item[Analise da fragmentação de pacotes I] 
+\end{description}
+
 Foi capturado o tráfego gerado pelo comando: ping -s 6328 marco.uminho.pt
 
 \begin{figure}[h]
@@ -142,5 +145,88 @@ Apos observar o output do comando ping no linux:
 \end{figure}
 Reparei que houve um acrescimo de 28 bytes na informacao enviada, para acomodar todos os cabecalhos essenciais na trasnmissao do pacote.
 Logo o valor maximo de SIZE sem que ocorra fragmentacao do pacote e de 1472 bytes, pois 1472 + 28 = 1500 bytes, que e o MTU da rede.
+
+\section{Parte 2}
+\subsection{Endereçamento e Encaminhamento IP}
+\subsubsection{Atribua um conjunto de endereços IP válidos (públicos) aos diversos sistemas da
+GEO, devendo o seu nº de grupo estar presente em pelo menos um octeto da
+componente de rede. Use máscaras (prefixos) de rede que respeitem a divisão
+clássica de endereçamento por classes (ver a tabela em anexo).}
+
+\subsubsection{Diga, justificando, se na rede está a ser usado encaminhamento estático ou
+dinâmico (e.g. baseado no protocolo OSPF - Open Shortest Path First). (Sugestão:
+analise os processos que estão a correr em cada sistema (hosts, routers) usando,
+por exemplo, o comando ps -ax).}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/ospf.png}
+    \caption{\label{fig:ospf}OSPF no router}
+\end{figure}
+
+Conforme a figura acima demonstra, o router esta a usar o protocolo OSPF, logo esta a usar encaminhamento dinamico, pois nao foi necessario especificar as rotas manualmente, e o protocolo ficou responsavel por isso.
+
+\subsubsection{Apague na tabela de encaminhamento do router de cada departamento e do
+router central a entrada respeitante à rede da interface wireless do router RISP.
+Confirme que os sistemas da GEO deixaram de ter acesso à interface wireless do
+router RISP. Usando apenas rotas por defeito, altere as tabelas de
+encaminhamento desses routers de forma a tornar novamente acessível o acesso
+à Internet através da interface wireless do router RISP.}
+
+Apos apagar a entrada respeitante a rede da interface wireless do router RISP, os sistemas da GEO deixaram de ter acesso a interface wireless do router RISP, pois nao sabem para onde encaminhar os pacotes.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/before-route.png}
+    \caption{\label{fig:before_route}Antes de routing manual}
+\end{figure}
+
+Para retormar o acesso a interface wireless do router RISP, foi necessario adicionar 2 rotas manualmente.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/route.png}
+    \caption{\label{fig:route}Routing manual}
+\end{figure}
+
+\begin{itemize}
+    \item No router 1 foi executado o comando: ip route add default via 10.0.4.2
+    \item No router 2 foi executado o comando: ip route add default via 10.0.9.1
+\end{itemize}
+
+Mas de forma a retornar a conexao de cada departamento a internet, foi necessario adicionar uma rota por defeito no router de cada departamento em direcao ao router central, seguindo o mesmo esquema: ip route add default via "ip do router central".
+
+Apos testar, todos os departamentos conseguiram aceder a internet.
+
+\subsection{Definição de Sub-redes}
+\subsubsection{Apresente uma imagem que mostre claramente o esquema de
+endereçamento de subredes adotado. Deve justificar as opções tomadas.}
+
+Tem em conta que existem 4 departamentos, apenas seriam necessarios 2 bits para representar as 4 subredes, mas como o enunciado pede que seja reservada pelo menos uma rede para uso futuro, foram reservados 3 bits para representar as subredes, ou seja, 8 subredes.
+
+Logo as subredes seguem o seguinte formato de endereçamento, tendo por base o endereco 10.0.10.xx/24:
+\begin{itemize}
+    \item Subrede 1 - 10.0.10.0/27 - sendo .0 o valor do ultimo octeto, com o bit \[2^7 = 0 \land 2^6 = 0 \land 2^5 = 0\]
+    \item Subrede 2 - 10.0.10.64/27 - sendo .64 o valor do ultimo octeto, com o bit \[2^7 = 0 \land 2^6 = 1 \land 2^5 = 0\]
+    \item Subrede 3 - 10.0.10.128/27 - sendo .128 o valor do ultimo octeto, com o bit \[2^7 = 1 \land 2^6 = 0 \land 2^5 = 0\]
+    \item Subrede 4 - 10.0.10.192/27 - sendo .192 o valor do ultimo octeto, com o bit \[2^7 = 1 \land 2^6 = 1 \land 2^5 = 0\]
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/subnetting.png}
+    \caption{\label{fig:subnetting}Subnetting}
+\end{figure}
+
+\subsubsection{Qual a máscara de rede que usou? Quantos hosts IP
+pode interligar no máximo em cada departamento? Quantos endereços
+de sub-rede ficam disponíveis para uso futuro? Justifique.}
+
+A mascara de rede usada foi 255.255.255.192, em formato CIDR /27 pois foram reservados 3 bits para representar as subredes, dos ja reservados 24 bits para representar a rede principal.
+Sobram-nos 5 bits para representar os hosts, logo temos 32 enderecos disponiveis para hosts, mas como o endereco de rede e o endereco de broadcast nao podem ser usados, ficam disponiveis 30 enderecos para hosts.
+A nivel das subredes, ficam disponiveis 4 subredes para uso futuro, pois das 8 subredes possiveis, apenas foram usadas 4.
+
+\subsubsection{Garanta e verifique que a conectividade IP entre os vários
+departamentos é mantida. Explique como procedeu.}
+
+Para verificar a conectividade, foi feito ping de cada departamento para cada departamento, e todos os pings foram bem sucedidos.
 
 \end{document}
