@@ -373,3 +373,35 @@ temporais associados ao servidor primário?}
             \item 3600: Tempo de vida padrão para registros negativos (1 hora).
         \end{itemize}
 \end{itemize}
+
+\subsection{Usando o registo MX}
+\subsubsection{Quais são os servidores de email do domínio “tecnico.ulisboa.pt.”?}
+
+Utilizando o comando dig MX tecnico.ulisboa.pt, obtemos os seguintes servidores de email:
+\begin{itemize}
+    \item 51 smtp1.tecnico.ulisboa.pt.
+    \item 10 smtp.tecnico.ulisboa.pt.
+    \item 61 smtp2.tecnico.ulisboa.pt.
+\end{itemize}
+
+\subsubsection{A que sistema são preferencialmente entregues as mensagens dirigidas a
+geral@tecnico.ulisboa.pt?}
+
+As mensagens sao preferencialmente entregues ao sistema de maior prioridade, isto e, os de menor numero a esquerda do nome do servidor de email, logo as mensagens seriam entregues ao servidor smtp.tecnico.ulisboa.pt, no caso deste estar indisponivel, a mensagem seria entao entregue ao seguintes, por ordem, smtp1.tecnico.ulisboa.pt e por fim smtp2.tecnico.ulisboa.pt.
+
+\subsection{A resposta obtida a uma query pode ser classificada como autoritativa ou não-autoritativa.}
+\subsubsection{Qual a diferença fundamental entre ambos os tipos de resposta?}
+
+A diferença fundamental entre ambos os tipos de resposta é que uma resposta autoritativa é uma resposta que vem diretamente do servidor DNS que contém a informação sobre o domínio, enquanto que uma resposta não-autoritativa é uma resposta que vem de um servidor DNS que não contém a informação sobre o domínio, mas que obteve essa informação de um servidor DNS autoritativo.
+Logo enquanto a resposta nao autoritativa pode conter informação desatualizada, a resposta autoritativa contém sempre a informação mais atualizada.
+
+\subsubsection{Usando o seu default DNS server, que tipos de resposta obtém se efetuar queries aos registos
+MX para identificar os servidores de email dos domínios “ulisboa.pt.” e “uminho.pt.”?
+Experimente e justifique os tipos de respostas obtidos.}
+
+\begin{figure}[h!]
+    \centering
+    \subfloat[\centering ULisboa]{{\includegraphics[width=5cm]{images/ulisboa.png} }}
+    \qquad
+    \subfloat[\centering UMinho]{{\includegraphics[width=5cm]{images/uminho.png} }}
+\end{figure}

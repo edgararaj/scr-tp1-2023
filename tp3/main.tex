@@ -33,7 +33,7 @@ Davide Santos (A102938) \\ \vspace{3mm}
 Edgar Araújo (A102946) \\ \vspace{3mm}
 Pedro Augusto Camargo (A102504) \\ \vspace{3mm}
 \vspace{0.2cm}
-{Novembro 2023}\\[0.2cm] % Data
+{Dezembro 2023}\\[0.2cm] % Data
 
 \vfill % Fill the rest of the page with whitespace
 \end{titlepage}
@@ -165,39 +165,133 @@ trocados entre o servidor e o cliente}
     \item vii) Os dados da aplicação trocados entre o servidor e o cliente SÃO ocultos, isso garante que o conteúdo da mensagem, incluindo informações sensíveis, não seja visível para um atacante que possa interceptar a comunicação. 
 \end{itemize}
 
-\section{Parte 2}
 \include{davide.tex}
 
-\subsection{Usando o registo MX}
-\subsubsection{Quais são os servidores de email do domínio “tecnico.ulisboa.pt.”?}
+\section{Uso da camada de transporte por parte das aplicações}
 
-Utilizando o comando dig MX tecnico.ulisboa.pt, obtemos os seguintes servidores de email:
-\begin{itemize}
-    \item 51 smtp1.tecnico.ulisboa.pt.
-    \item 10 smtp.tecnico.ulisboa.pt.
-    \item 61 smtp2.tecnico.ulisboa.pt.
-\end{itemize}
+\subsection{Capturando o tráfego nos momentos que considere adequados, observe atentamente como as várias aplicações
+utilizam o serviço de transporte, quando é efetuado}
 
-\subsubsection{A que sistema são preferencialmente entregues as mensagens dirigidas a
-geral@tecnico.ulisboa.pt?}
-
-As mensagens sao preferencialmente entregues ao sistema de maior prioridade, isto e, os de menor numero a esquerda do nome do servidor de email, logo as mensagens seriam entregues ao servidor smtp.tecnico.ulisboa.pt, no caso deste estar indisponivel, a mensagem seria entao entregue ao seguintes, por ordem, smtp1.tecnico.ulisboa.pt e por fim smtp2.tecnico.ulisboa.pt.
-
-\subsection{A resposta obtida a uma query pode ser classificada como autoritativa ou não-autoritativa.}
-\subsubsection{Qual a diferença fundamental entre ambos os tipos de resposta?}
-
-A diferença fundamental entre ambos os tipos de resposta é que uma resposta autoritativa é uma resposta que vem diretamente do servidor DNS que contém a informação sobre o domínio, enquanto que uma resposta não-autoritativa é uma resposta que vem de um servidor DNS que não contém a informação sobre o domínio, mas que obteve essa informação de um servidor DNS autoritativo.
-Logo enquanto a resposta nao autoritativa pode conter informação desatualizada, a resposta autoritativa contém sempre a informação mais atualizada.
-
-\subsubsection{Usando o seu default DNS server, que tipos de resposta obtém se efetuar queries aos registos
-MX para identificar os servidores de email dos domínios “ulisboa.pt.” e “uminho.pt.”?
-Experimente e justifique os tipos de respostas obtidos.}
+a) \textbf{browser http://www.sdum.uminho.pt/} - Não é seguro. O protocolo de transporte utilizado é o TCP/IP. Porta 80.
 
 \begin{figure}[h!]
     \centering
-    \subfloat[\centering ULisboa]{{\includegraphics[width=5cm]{images/ulisboa.png} }}
-    \qquad
-    \subfloat[\centering UMinho]{{\includegraphics[width=5cm]{images/uminho.png} }}
+    \includegraphics[width=1\textwidth]{images/httpsdata.png}
+    \caption{Dados do http nao encriptados}
+    \label{fig:enter-label}
 \end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/httpprotocol.png}
+    \caption{Porta e protocolo do pedido http}
+    \label{fig:enter-label}
+\end{figure}
+
+
+
+b) \textbf{browser https://www.uminho.pt/PT} - É seguro. Protocolo de Transporte: SSL/TLS. Porta 443.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/httpsdata.png}
+    \caption{Dados do http encriptados}
+    \label{fig:enter-label}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/httpsport.png}
+    \caption{Porta do pedido https}
+    \label{fig:enter-label}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/ssl.png}
+    \caption{Protocolo SSL/TLS do pedido https}
+    \label{fig:enter-label}
+\end{figure}
+
+
+c) \textbf{ftp ftp.di.uminho.pt} - Não é seguro. Protocolo de transporte: TCP. Portas 20 e 21.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/ftpdados.png}
+    \caption{Dados do ftp nao encriptados}
+    \label{fig:enter-label}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/ftp.png}
+    \caption{Porta 21 e Protocolo de Transporte TCP}
+    \label{fig:enter-label}
+\end{figure}
+
+d) \textbf{ping dns.google} - É seguro. Protocolo de Transporte: ICMP. Não aplicável.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/ping.png}
+    \caption{Protocolos ICMP dos pings para 8.8.8.8 (dns.google}
+    \label{fig:enter-label}
+\end{figure}
+
+e) \textbf{ssh marco.uminho.pt} - É seguro. Protocolo de Transporte: TCP. Porta 22.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/ssh.png}
+    \caption{\label{fig:pacote}Porta e protocolo ssh}
+\end{figure}
+
+f) \textbf{nslookup www.ualg.pt} - Não é seguro. Protocolo de Transporte: UDP. Porta 53.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/nslookup.png}
+    \caption{\label{fig:pacote}Porta e protocolo nslookup}
+\end{figure}
+
+g) \textbf{traceroute dns.uminho.pt} - É seguro. Protocolo de Transporte: UDP e ICMP. Costuma começar na porta 33434 e usa portas com valores altos. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/traceroute.png}
+    \caption{\label{fig:pacote}Traceroute}
+\end{figure}
+
+h) \textbf{telnet freechess.org} - Não é seguro. Protocolo de Transporte: TCP. Porta 23
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/telnet1.png}
+    \caption{Dados não encriptados telnet}
+    \label{fig:enter-label}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{images/telnet2.png}
+    \caption{Porta e protocolo utilizado telnet}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Comente as principais diferenças entre os protocolos TCP e UDP. Relacione-as com as experiências realizadas
+onde observou os campos dos cabeçalhos respetivos e o overhead protocolar. Em particular, identifique os
+campos do TCP responsáveis pelo controlo de fluxo, ordenação e fiabilidade do protocolo. Perante isto, diga,
+justificando, se nas aplicações com requisitos temporais críticos (e.g. online gaming, video-audio streaming) é
+mais adequado usar o protocolo UDP ou o TCP?}
+
+O \textbf{Protocolo TCP} oferece um serviço mais confiável de entrega de dados, ele retransmite pacotes perdidos no caminho e solicita confirmações de recebimento do destinatário (ACK), já o \textbf{Protocolo UDP} oferece um serviço menos confiável, mas também uma transmissão de dados mais rápida. Como o Protocolo UDP é mais simples comparado com o TCP, resulta em menos overhead. Além disso, o protocolo UDP não requere a confirmação da entrega do pacote e não retransmite pacotes perdidos de forma a corrigir a transmissão. O TCP é garante que os dados sejam entregues na ordem correta ao destinatário, fazendo com que seja mais lento comparado com o UDP. O \textbf{TCP} gere o controlo de fluxo através das Flags TCP, como o flag ACK e a flag Window Update, através do Número de Sequência (Sequence Number), que são utilizados para controlar a ordem dos pacotes e garantir a entrega correta. Quanto à fiabilidade do protocolo, o \textbf{TCP} utiliza um processo de Handshaking para a sincronização e negociação de parâmetros de comunicação.
+Nas aplicações com requisitos temporais críticos é mais adequado utilizarmos os protocolo UDP. Em jogos online e streaming, a latência é crítica para uma experiência positiva, por isso, como o Protocolo UDP é o mais rápido, é utilizado nessas ocasiões, além disso, há uma tolerância â perda de pacotes nos jogos e streamings sem a necessidade de retransmissão. O UDP Não espera por ACKs, o que resulta em menor sobrecarga e menor atraso para a entrega de dados.
+
+\section{Conclusao}
+
+Escrever este relatório foi fundamental para entendermos como as comunicações acontecem usando o TCP, um protocolo essencial na transmissão confiável de dados. Exploramos também os protocolos HTTP e HTTP sobre TLS, que são fundamentais para a comunicação com websites, destacando a importância da segurança.
+
+Além disso, aprendemos sobre utilitários como 'dig' e 'nslookup', que são ferramentas práticas para pesquisar em servidores DNS, ajudando a entender como os nomes de domínio são resolvidos.
 
 \end{document}
