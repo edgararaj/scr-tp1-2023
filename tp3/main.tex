@@ -3,6 +3,7 @@
 \usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{subfig}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
 \begin{document}
@@ -52,5 +53,118 @@ Foram enviadas 2 querys dns, uma do tipo A (endereço IPv4) e outra do tipo AAAA
 
 \subsection{Localize a trama com a resposta à query DNS formulada. Identifique nesta trama o endereço IP do
 servidor web. Identifique também o servidor de nomes que forneceu a resposta, através do seu IP e nome}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/dns_response.png}
+\end{figure}
+
+O endereço IP do servidor web que respondeu a query DNS: 193.137.16.65
+De forma a identificar o servidor de nomes que forneceu a resposta, poderia ter sido usado o utilitario nslookup, como tambem o servico WEB https://whatismyipaddress.com/ip/\textless ip\textgreater,
+para o ip anterior:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/whats.png}
+\end{figure}
+
+Obtemos que o servidor DNS que forneceu a resposta, tem por hostname: dns3.uminho.pt
+
+\subsection{Aplique o filtro aos protocolos http // tcp. Identifique os endereços IP do cliente e do servidor HTTP}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/http_ip.png}
+\end{figure}
+
+\begin{itemize}
+    \item Temos o endereco IP do cliente, vindo do HTTP GET Request: 172.26.57.176
+    \item Que tem como destino o IP do servidor: 193.137.9.174
+\end{itemize}
+
+\subsection{Identifique os segmentos TCP correspondentes ao estabelecimento da ligação entre o cliente e o servidor
+HTTP. Qual o o tamanho máximo de segmento (MSS) que o servidor aceita receber?}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/mss.png}
+\end{figure}
+
+Tal como mostra a imagem, os pacotes 18 e 19 correspondem aos pactoes SYN do cliente e SYN-ACK do servidor, respetivamente.
+Logo ambos tem oportunidade nestes pacotes de solicitar um MSS, que no caso do servidor é de 1250 bytes.
+
+\subsection{Identifique a resposta HTTP do servidor respeitante ao primeiro pedido GET efetuado pelo cliente.
+Quantos bytes de dados aplicacionais contém essa resposta HTTP?}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/ok.png}
+\end{figure}
+
+A resposta HTTP do servidor é do tipo 200 OK, e contem 43275 bytes de dados aplicacionais, tal como indica o campo Content-Length.
+
+\subsection{A resposta HTTP identificada na alínea anterior foi transmitida em quantos segmentos TCP? Apresente
+também uma estimativa teórica para essa quantidade.}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/segments.png}
+\end{figure}
+
+A resposta HTTP foi transmitida em 9 segmentos. A estimativa teórica para essa quantidade é de 43566/1460 = 29.8, ou seja, 30 segmentos.
+
+\subsection{A partir da informação contida nos cabeçalhos dos protocolos IP e TCP, determine o número de bytes de
+dados enviados no primeiro e no último segmento TCP respeitantes à resposta HTTP.}
+
+\begin{figure}[h]
+    \centering
+    \subfloat[\centering Primeiro Segmento]{{\includegraphics[width=5cm]{images/start.png} }}%
+    \qquad
+    \subfloat[\centering Último Segmento]{{\includegraphics[width=5cm]{images/end.png} }}%
+    \caption{2 Figures side by side}%
+    \label{fig:example}%
+\end{figure}
+
+No primeiro segmento TCP, o número de bytes de dados enviados é de 2476 bytes. No último segmento TCP, o número de bytes de dados enviados é de 236 bytes.
+
+\subsection{Observe a informação apresentada no campo host do cabeçalho do pedido HTTP e diga qual o seu
+interesse?}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/host.png}
+\end{figure}
+
+O campo host do cabeçalho do pedido HTTP indica o nome colocado no url do browser, que serve para identificar o website que se pretende aceder, em caso de um servidor conter vários websites diferentes.
+
+\subsection{Com base na sequência de dados trocados entre o cliente e o servidor diga, justificando, se o servidor
+HTTP está a funcionar em modo de conexão persistente ou não persistente.}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{images/conexao.png}
+\end{figure}
+
+O servidor HTTP está a funcionar em modo de conexão persistente, pois nenhum dos segmentos TCP tem a flag FIN ativa, entre GET Requests.
+
+\subsection{Aceda a https://www.uminho.pt, ao mesmo tempo que captura o tráfego desse acesso com o Wireshark.
+Porque razão o tráfego HTTP não é identificado como tal no Wireshark? Apesar disso, pode detetar-se
+qual o protocolo aplicacional. Como é que o Wireshark sabe que se trata duma ligação http-over-tls?}
+
+A razao pela qual o trafego HTTP nao é identificado como tal no Wireshark, é porque o trafego HTTP está a ser feito sobre o protocolo TLS, que é um protocolo de segurança que encripta o trafego HTTP, de forma a que este não seja visivel a terceiros. O Wireshark sabe que se trata de uma ligação http-over-tls, porque o protocolo TLS é identificado no campo Protocol do pacote.
+
+\subsection{Diga, justificando, quais dos seguintes elementos uma comunicação HTTPS permite manter ocultos dum
+atacante: i) o endereço IP do cliente, ii) o endereço IP do servidor web, iii) o nome do servidor web, iv) o
+tamanho da mensagem trocada entre o cliente o servidor, v) a identificação da página acedida no servidor
+web, vi) a frequência das conexões estabelecidas entre o cliente e o servidor, vii) os dados da aplicação
+trocados entre o servidor e o cliente}
+
+\begin{itemize}
+    \item i) O endereço IP do cliente não é oculto, pois é necessário para que o servidor saiba para onde enviar a resposta.
+    \item ii) O endereço IP do servidor web não é oculto, pois é necessário para que o cliente saiba para onde enviar o pedido.
+    \item iii) O nome do servidor web não é oculto, pois é necessário para que o servidor saiba para que website enviar o pedido.
+    \item iv) O tamanho da mensagem trocada entre o cliente e o servidor não é oculto, pois é necessário para que o cliente saiba se recebeu a mensagem completa.
+    \item v) A identificação da página acedida no servidor web não é oculto. O caminho do URL é parte da solicitação HTTP e, embora a comunicação seja criptografada, a estrutura básica da solicitação permanece visível.
+    \item vi) A frequência das conexões estabelecidas entre o cliente e o servidor não é oculto, pois é necessário para que o servidor saiba se o cliente está a tentar fazer um ataque de negação de serviço.
+    \item vii) Os dados da aplicação trocados entre o servidor e o cliente SÃO ocultos, isso garante que o conteúdo da mensagem, incluindo informações sensíveis, não seja visível para um atacante que possa interceptar a comunicação. 
+\end{itemize}
 
 \end{document}
