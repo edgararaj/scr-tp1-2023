@@ -14,7 +14,7 @@
 
 \newcommand{\HRule}{\rule{\linewidth}{0.4mm}} % Barra horizontal
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.24\linewidth]{images/uniMinho.jpg}
 \end{figure}
@@ -43,7 +43,7 @@ Pedro Augusto Camargo (A102504) \\ \vspace{3mm}
 
 \section{Nível aplicacional}
 \subsection{Identifique o endereço IP da estação que formulou a query DNS e o tipo de query realizada.}
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1\linewidth]{images/dns.png}
 \end{figure}
@@ -54,7 +54,7 @@ Foram enviadas 2 querys dns, uma do tipo A (endereço IPv4) e outra do tipo AAAA
 \subsection{Localize a trama com a resposta à query DNS formulada. Identifique nesta trama o endereço IP do
 servidor web. Identifique também o servidor de nomes que forneceu a resposta, através do seu IP e nome}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1\linewidth]{images/dns_response.png}
 \end{figure}
@@ -62,7 +62,7 @@ servidor web. Identifique também o servidor de nomes que forneceu a resposta, a
 O endereço IP do servidor web que respondeu a query DNS: 193.137.16.65
 De forma a identificar o servidor de nomes que forneceu a resposta, poderia ter sido usado o utilitario nslookup, como tambem o servico WEB https://whatismyipaddress.com/ip/\textless ip\textgreater,
 para o ip anterior:
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.5\linewidth]{images/whats.png}
 \end{figure}
@@ -70,7 +70,7 @@ para o ip anterior:
 Obtemos que o servidor DNS que forneceu a resposta, tem por hostname: dns3.uminho.pt
 
 \subsection{Aplique o filtro aos protocolos http // tcp. Identifique os endereços IP do cliente e do servidor HTTP}
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1\linewidth]{images/http_ip.png}
 \end{figure}
@@ -83,7 +83,7 @@ Obtemos que o servidor DNS que forneceu a resposta, tem por hostname: dns3.uminh
 \subsection{Identifique os segmentos TCP correspondentes ao estabelecimento da ligação entre o cliente e o servidor
 HTTP. Qual o o tamanho máximo de segmento (MSS) que o servidor aceita receber?}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1\linewidth]{images/mss.png}
 \end{figure}
@@ -94,7 +94,7 @@ Logo ambos tem oportunidade nestes pacotes de solicitar um MSS, que no caso do s
 \subsection{Identifique a resposta HTTP do servidor respeitante ao primeiro pedido GET efetuado pelo cliente.
 Quantos bytes de dados aplicacionais contém essa resposta HTTP?}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.5\linewidth]{images/ok.png}
 \end{figure}
@@ -104,7 +104,7 @@ A resposta HTTP do servidor é do tipo 200 OK, e contem 43275 bytes de dados apl
 \subsection{A resposta HTTP identificada na alínea anterior foi transmitida em quantos segmentos TCP? Apresente
 também uma estimativa teórica para essa quantidade.}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.5\linewidth]{images/segments.png}
 \end{figure}
@@ -114,13 +114,11 @@ A resposta HTTP foi transmitida em 9 segmentos. A estimativa teórica para essa 
 \subsection{A partir da informação contida nos cabeçalhos dos protocolos IP e TCP, determine o número de bytes de
 dados enviados no primeiro e no último segmento TCP respeitantes à resposta HTTP.}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
-    \subfloat[\centering Primeiro Segmento]{{\includegraphics[width=5cm]{images/start.png} }}%
+    \subfloat[\centering Primeiro Segmento]{{\includegraphics[width=5cm]{images/start.png} }}
     \qquad
-    \subfloat[\centering Último Segmento]{{\includegraphics[width=5cm]{images/end.png} }}%
-    \caption{2 Figures side by side}%
-    \label{fig:example}%
+    \subfloat[\centering Último Segmento]{{\includegraphics[width=5cm]{images/end.png} }}
 \end{figure}
 
 No primeiro segmento TCP, o número de bytes de dados enviados é de 2476 bytes. No último segmento TCP, o número de bytes de dados enviados é de 236 bytes.
@@ -128,7 +126,7 @@ No primeiro segmento TCP, o número de bytes de dados enviados é de 2476 bytes.
 \subsection{Observe a informação apresentada no campo host do cabeçalho do pedido HTTP e diga qual o seu
 interesse?}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.5\linewidth]{images/host.png}
 \end{figure}
@@ -138,7 +136,7 @@ O campo host do cabeçalho do pedido HTTP indica o nome colocado no url do brows
 \subsection{Com base na sequência de dados trocados entre o cliente e o servidor diga, justificando, se o servidor
 HTTP está a funcionar em modo de conexão persistente ou não persistente.}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1\linewidth]{images/conexao.png}
 \end{figure}
@@ -166,5 +164,38 @@ trocados entre o servidor e o cliente}
     \item vi) A frequência das conexões estabelecidas entre o cliente e o servidor não é oculto, pois é necessário para que o servidor saiba se o cliente está a tentar fazer um ataque de negação de serviço.
     \item vii) Os dados da aplicação trocados entre o servidor e o cliente SÃO ocultos, isso garante que o conteúdo da mensagem, incluindo informações sensíveis, não seja visível para um atacante que possa interceptar a comunicação. 
 \end{itemize}
+
+\section{Parte 2}
+\subsection{Usando o registo MX}
+\subsubsection{Quais são os servidores de email do domínio “tecnico.ulisboa.pt.”?}
+
+Utilizando o comando dig MX tecnico.ulisboa.pt, obtemos os seguintes servidores de email:
+\begin{itemize}
+    \item 51 smtp1.tecnico.ulisboa.pt.
+    \item 10 smtp.tecnico.ulisboa.pt.
+    \item 61 smtp2.tecnico.ulisboa.pt.
+\end{itemize}
+
+\subsubsection{A que sistema são preferencialmente entregues as mensagens dirigidas a
+geral@tecnico.ulisboa.pt?}
+
+As mensagens sao preferencialmente entregues ao sistema de maior prioridade, isto e, os de menor numero a esquerda do nome do servidor de email, logo as mensagens seriam entregues ao servidor smtp.tecnico.ulisboa.pt, no caso deste estar indisponivel, a mensagem seria entao entregue ao seguintes, por ordem, smtp1.tecnico.ulisboa.pt e por fim smtp2.tecnico.ulisboa.pt.
+
+\subsection{A resposta obtida a uma query pode ser classificada como autoritativa ou não-autoritativa.}
+\subsubsection{Qual a diferença fundamental entre ambos os tipos de resposta?}
+
+A diferença fundamental entre ambos os tipos de resposta é que uma resposta autoritativa é uma resposta que vem diretamente do servidor DNS que contém a informação sobre o domínio, enquanto que uma resposta não-autoritativa é uma resposta que vem de um servidor DNS que não contém a informação sobre o domínio, mas que obteve essa informação de um servidor DNS autoritativo.
+Logo enquanto a resposta nao autoritativa pode conter informação desatualizada, a resposta autoritativa contém sempre a informação mais atualizada.
+
+\subsubsection{Usando o seu default DNS server, que tipos de resposta obtém se efetuar queries aos registos
+MX para identificar os servidores de email dos domínios “ulisboa.pt.” e “uminho.pt.”?
+Experimente e justifique os tipos de respostas obtidos.}
+
+\begin{figure}[h!]
+    \centering
+    \subfloat[\centering ULisboa]{{\includegraphics[width=5cm]{images/ulisboa.png} }}
+    \qquad
+    \subfloat[\centering UMinho]{{\includegraphics[width=5cm]{images/uminho.png} }}
+\end{figure}
 
 \end{document}
